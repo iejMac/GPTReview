@@ -1,19 +1,8 @@
-on:
-  pull_request:
-    types: [opened]
-  issue_comment:
-    types: [created]
+on: issue_comment
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
     steps:
-      - uses: khan/pull-request-comment-trigger@v1.1.0
-        id: check
-        with:
-          trigger: '@deploy'
-          reaction: rocket
+      - uses: alexjurkiewicz/pr-comment-github-deployment@master
         env:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-      - run: 'echo Found it!'
-        if: steps.check.outputs.triggered == 'true'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
