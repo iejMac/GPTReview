@@ -1,20 +1,15 @@
+name: Comment on PR
+
 on:
   issue_comment:
     types: [created]
 
 jobs:
-  python:
+  build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-    - name: Install dependencies
-      run: pip install -r requirements.txt
-    - uses: actions/checkout@v2
-      env:
-        PERSONAL_ACCESS_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
-    - name: Run Python code
-      run: python comment.py
+      - uses: actions/checkout@v2
+      - uses: thollander/actions-comment-pull-request@v1
+        with:
+          # Set the comment to the comment author's name
+          comment: ${{ github.actor }}
