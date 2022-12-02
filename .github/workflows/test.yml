@@ -10,7 +10,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      # Run the python function and capture the output as an environment variable
+      # Opt into using unsecure commands
+      - name: Allow unsecure commands
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+
+      # Set the environment variable using the set-env command
       - name: Set comment
         run: |
           OUTPUT=$(python function.py)
