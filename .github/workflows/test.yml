@@ -1,5 +1,5 @@
 on:
-  issue_comment:
+  pull_request_review_comment:
     types: [created]
 
 jobs:
@@ -13,8 +13,10 @@ jobs:
         python-version: 3.8
     - name: Install dependencies
       run: pip install -r requirements.txt
-    - name: Set environment variables
-      env:
-        GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+    - name: Comment PR
+      uses: thollander/actions-comment-pull-request@v1
+      with:
+        message: |
+          Hello world ! :wave:
     - name: Run Python code
-      run: python command.py
+      run: python my_script.py
