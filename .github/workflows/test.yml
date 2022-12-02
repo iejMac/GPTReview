@@ -1,5 +1,5 @@
 on:
-  pull_request_review_comment:
+  issue_comment:
     types: [created]
 
 jobs:
@@ -19,4 +19,4 @@ jobs:
         message: |
           Hello world ! :wave:
     - name: Run Python code
-      run: python my_script.py
+      run: python command.py
