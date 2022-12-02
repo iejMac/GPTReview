@@ -1,6 +1,4 @@
-on:
-  pull_request_review_comment:
-    types: [created]
+on: issue_comment
 
 jobs:
   python:
