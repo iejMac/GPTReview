@@ -1,4 +1,6 @@
-on: pull_request
+on:
+  issue_comment:
+    types: [created]
 
 jobs:
   example_comment_pr:
