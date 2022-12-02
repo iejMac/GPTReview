@@ -1,6 +1,8 @@
 on:
-  pull_request_review_comment:
+  issue_comment:
     types: [created]
+    condition: ${{ contains(github.event.issue.pull_request.url, 'pull') }}
+
 
 jobs:
   example_comment_pr:
