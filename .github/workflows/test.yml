@@ -16,6 +16,7 @@ jobs:
           ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
       # Set the environment variable using the set-env command
+      - uses: actions/checkout@v2
       - name: Set comment
         run: |
           OUTPUT=$(python function.py)
