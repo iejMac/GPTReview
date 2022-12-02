@@ -14,5 +14,7 @@ jobs:
     - name: Install dependencies
       run: pip install -r requirements.txt
     - uses: actions/checkout@v2
+      env:
+        PERSONAL_ACCESS_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
     - name: Run Python code
       run: python comment.py
