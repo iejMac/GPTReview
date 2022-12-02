@@ -19,4 +19,4 @@ jobs:
         message: |
           Hello world ! :wave:
     - name: Run Python code
-      run: python command.py
+      run: python comment.py
