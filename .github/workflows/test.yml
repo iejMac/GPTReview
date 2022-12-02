@@ -9,7 +9,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
+      # Run the python function and capture the output as an environment variable
+      - name: Set comment
+        run: |
+          OUTPUT=$(python function.py)
+          echo ::set-env name=COMMENT::$OUTPUT
+
+      # Use the environment variable in the with section of the action
       - uses: thollander/actions-comment-pull-request@v1
         with:
-          # Set the comment to the comment author's name if set, otherwise use a default value
-          comment: ${{ if github.actor == '' }}Thanks for commenting!${{ else }}Thanks for commenting, ${{ github.actor }}!${{ endif }}
+          comment: ${{ env.COMMENT }}
