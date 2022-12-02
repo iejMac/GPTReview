@@ -19,7 +19,6 @@ jobs:
 
       # Add the uses key to the set comment step
       - name: Set comment
-        uses: actions/checkout@v2
         run: |
           OUTPUT=$(python function.py)
           echo ::set-env name=COMMENT::$OUTPUT
