@@ -1,22 +1,15 @@
-on:
-  pull_request_review_comment:
-    types: [created]
+on: pull_request
 
 jobs:
-  python:
+  example_comment_pr:
     runs-on: ubuntu-latest
+    name: An example job to comment a PR
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: 3.8
-    - name: Install dependencies
-      run: pip install -r requirements.txt
-    - name: Comment PR
-      uses: thollander/actions-comment-pull-request@v1
-      with:
-        message: |
-          Hello world ! :wave:
-    - name: Run Python code
-      run: python my_script.py
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v1
+        with:
+          message: |
+            Hello world ! :wave:
