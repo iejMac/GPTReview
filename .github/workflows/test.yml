@@ -8,22 +8,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # Add the uses key to the checkout step
-      - uses: actions/checkout@v2
-
-      # Add the uses key to the allow unsecure commands step
-      - name: Allow unsecure commands
-        uses: actions/checkout@v2
-        env:
-          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-
-      # Add the uses key to the set comment step
-      - name: Set comment
-        run: |
-          OUTPUT=$(python function.py)
-          echo ::set-env name=COMMENT::$OUTPUT
-
       # Add the uses key to the action step
       - uses: thollander/actions-comment-pull-request@v1
+        env:
+          COMMENT="hi there"
         with:
           comment: ${{ env.COMMENT }}
