@@ -23,7 +23,7 @@ jobs:
 
       - name: get PR link
         run: |
-          echo The Title of your PR is ${{ github.event.pull_request.title }}
+          echo ${{ github.event.html_url }}
 
       - name: Set the value
         run: |
