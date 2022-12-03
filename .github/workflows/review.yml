@@ -29,7 +29,3 @@ jobs:
           echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
           echo "GITHUB_TOKEN=${{ secrets.MY_GITHUB_TOKEN }}" >> $GITHUB_ENV
           python review.py
-      # Add the uses key to the action step
-      # - uses: thollander/actions-comment-pull-request@v1
-      #   with:
-      #     message: ${{ env.COMMENT }}
