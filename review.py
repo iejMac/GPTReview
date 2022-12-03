@@ -1,5 +1,5 @@
 import os
-import json
+import requests
 
 import openai
 
@@ -10,7 +10,8 @@ def get_review():
     variables = dict([line.split("=") for line in f.readlines()])
 
   pr_link = variables["LINK"]
-  review = f"Horrible code, please stop, {pr_link}"
+  patch = requests.get(pr_link + ".patch").text
+  review = f"Horrible code, please stop, {patch}"
   return review
 
 if __name__ == "__main__":
