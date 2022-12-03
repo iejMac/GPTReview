@@ -15,12 +15,10 @@ def get_review():
   patch = requests.get(request_link).text
 
   question = "\n Can you summarize this GitHub Pull Request for me?"
-  prompt = patch[:2048 - len(question)] + question
-
-  prompt = "test"
+  prompt = patch[:4096 - len(question)] + question
 
   response = openai.Completion.create(
-    engine="text-ada-001",
+    engine="text-davinci-003",
     prompt=prompt,
     temperature=0.5,
     max_tokens=256,
@@ -29,36 +27,24 @@ def get_review():
     presence_penalty=0.0
   )
   review = response['choices'][0]['text']
-  review = review[:10]
-  # review = str(len(variables["OPENAI_API_KEY"])) + " " + variables["OPENAI_API_KEY"][:2] + " " + variables["OPENAI_API_KEY"][-2:]
-  '''
-  with open(github_env, "a") as f:
-    f.write(f'COMMENT="{review}"')
-  '''
+  print(review)
+
+  review = "".join(review.split()) # This way has issues with whitespace in comment body
 
   ACCESS_TOKEN = variables["GITHUB_TOKEN"]
-
   headers = {
-    'Authorization': f'token {{ACCESS_TOKEN}}',
+    'Accept': 'application/vnd.github+json',
+    'Authorization': f'Bearer {ACCESS_TOKEN}',
     'Content-Type': 'application/x-www-form-urlencoded',
   }
 
-  data = '{"body": "Your Message to Comment"}'
+  data = '{"body":"' + review + '"}'
+  OWNER = pr_link.split("/")[-4]
+  REPO = pr_link.split("/")[-3]
+  PR_NUMBER = pr_link.split("/")[-1]
 
-  REPO_OWNER = "iejMac"
-  REPO_NAME = "GPTReview"
-  PR_NUMBER = 5
+  response = requests.post(f'https://api.github.com/repos/{OWNER}/{REPO}/issues/{PR_NUMBER}/comments', headers=headers, data=data)
 
-  response = requests.post(
-    'https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues/${PR_NUMBER}/comments',
-    headers=headers,
-    data=data,
-  )
-
-
-
-
-  return review
 
 if __name__ == "__main__":
-  print(get_review())
+  get_review()
