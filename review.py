@@ -10,10 +10,12 @@ def get_review():
     variables = dict([line.split("=") for line in f.readlines()])
   pr_link = variables["LINK"]
   openai.api_key = variables["OPENAI_API_KEY"]
+
   request_link = "https://patch-diff.githubusercontent.com/raw/" + pr_link[len("https://github.com/"):] + ".patch"
   patch = requests.get(request_link).text
 
-  prompt = patch
+  question = "\n Can you summarize this GitHub Pull Request for me?"
+  prompt = patch[:2048 - len(question)] + question
 
   response = openai.Completion.create(
     engine="text-ada-001",
