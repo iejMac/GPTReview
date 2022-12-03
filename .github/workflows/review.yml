@@ -5,8 +5,9 @@ on:
     types: [created]
 
 jobs:
-  if: ${{ github.event.issue.pull_request }}
-  build:
+  pr_commented:
+    name: Review PR
+    if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     steps:
       - name: checkout repo content
