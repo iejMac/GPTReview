@@ -15,7 +15,7 @@ def get_review():
 
   patch = requests.get(request_link).text
   # review = f"Horrible code, please stop {pr_link} {patch}"
-  review = patch
+  review = patch[:10]
   return review
 
 if __name__ == "__main__":
