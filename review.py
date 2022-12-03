@@ -44,6 +44,7 @@ def get_review():
     presence_penalty=0.0
   )
   review = response['choices'][0]['text']
+  review = "out"
   # review = str(len(variables["OPENAI_API_KEY"])) + " " + variables["OPENAI_API_KEY"][:2] + " " + variables["OPENAI_API_KEY"][-2:]
   return review
 
