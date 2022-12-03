@@ -5,7 +5,8 @@ import openai
 
 
 def get_review():
-  pr_link = None
+  github_env = os.getenv("GITHUB_ENV")
+  pr_link = github_env
   review = f"Horrible code, please stop, {pr_link}"
   return review
 

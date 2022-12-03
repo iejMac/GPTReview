@@ -24,7 +24,7 @@ jobs:
 
       - name: Set the value
         run: |
-          echo "LINK=https://github.com/${{ github.repository }}/pull/${{ github.event.issue.number }}"
+          echo "LINK=https://github.com/${{ github.repository }}/pull/${{ github.event.issue.number }}" >> $GITHUB_ENV
           echo "COMMENT=$(python review.py)" >> $GITHUB_ENV
 
       # Add the uses key to the action step
