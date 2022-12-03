@@ -17,6 +17,8 @@ def get_review():
   question = "\n Can you summarize this GitHub Pull Request for me?"
   prompt = patch[:2048 - len(question)] + question
 
+  prompt = "test"
+
   response = openai.Completion.create(
     engine="text-ada-001",
     prompt=prompt,
