@@ -7,10 +7,7 @@ on:
 jobs:
   pr_commented:
     # if: ${{ github.event.issue.pull_request }} && ${{ startsWith(github.event.comment.body, '@openai') }}
-    # if: ${{ github.event.issue.pull_request }}
-    if: | 
-      ${{ github.event.issue.pull_request }} &&
-      ${{ startsWith(github.event.comment.body, 'openai') }}
+    if: ${{ startsWith(github.event.comment.body, 'openai') }}
     name: Review PR
     runs-on: ubuntu-latest
     steps:
@@ -26,7 +23,7 @@ jobs:
           source .env/bin/activate
           python -m pip install -U pip
           pip install -r requirements.txt
-      - name: Set link, api key, and get comment
+      - name: Review PR and make comment
         run: |
           source .env/bin/activate	
           echo "LINK=https://github.com/${{ github.repository }}/pull/${{ github.event.issue.number }}" >> $GITHUB_ENV
