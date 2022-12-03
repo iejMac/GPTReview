@@ -1,5 +1,6 @@
 import os
 import requests
+import json
 
 import openai
 
@@ -17,8 +18,10 @@ def get_review():
   question = "\n Can you summarize this GitHub Pull Request for me?"
   prompt = patch[:4096 - len(question)] + question
 
+  model = "text-ada-001"
+  # model = "text-davinci-003"
   response = openai.Completion.create(
-    engine="text-davinci-003",
+    engine=model,
     prompt=prompt,
     temperature=0.5,
     max_tokens=256,
@@ -28,10 +31,6 @@ def get_review():
   )
   review = response['choices'][0]['text']
 
-  review = "".join(review.split()) # This way has issues with whitespace in comment body
-  review.replace('"', '')
-  review.replace("'", '')
-
   ACCESS_TOKEN = variables["GITHUB_TOKEN"]
   headers = {
     'Accept': 'application/vnd.github+json',
@@ -39,7 +38,10 @@ def get_review():
     'Content-Type': 'application/x-www-form-urlencoded',
   }
 
-  data = '{"body":"' + review + '"}'
+  data = {"body": review}
+  data = json.dumps(data)
+
+
   OWNER = pr_link.split("/")[-4]
   REPO = pr_link.split("/")[-3]
   PR_NUMBER = pr_link.split("/")[-1]
