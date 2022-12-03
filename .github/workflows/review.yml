@@ -10,9 +10,10 @@ jobs:
     if: ${{ github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     steps:
-      - uses: kceb/pull-request-url-action@v1
-        id: pr-url
-      - run: echo "${{ steps.pr-url.outputs.url }}"
+      - name: Echo PR Link
+      - run: |
+        echo ${{ github.event.pull_request.html_url }}
+
       - name: checkout repo content
         uses: actions/checkout@v2 # checkout the repository content to github runner
       - name: setup python
