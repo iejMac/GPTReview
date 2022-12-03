@@ -22,9 +22,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Set the value
+      - name: Set link, api key, and get comment
         run: |
           echo "LINK=https://github.com/${{ github.repository }}/pull/${{ github.event.issue.number }}" >> $GITHUB_ENV
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
           echo "COMMENT=$(python review.py)" >> $GITHUB_ENV
 
       # Add the uses key to the action step
