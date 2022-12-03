@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Echo PR Link
       - run: |
-        echo ${{ github.event.pull_request.html_url }}
+          echo ${{ github.event.pull_request.html_url }}
 
       - name: checkout repo content
         uses: actions/checkout@v2 # checkout the repository content to github runner
