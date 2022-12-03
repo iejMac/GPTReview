@@ -3,14 +3,15 @@ name: Comment on PR
 on:
   issue_comment:
     types: [created]
-# '$(python function.py)'
+# 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Set the value
         run: |
-          echo "COMMENT=hi there" >> $GITHUB_ENV
+          echo "COMMENT='$(python function.py)'"
+          echo "COMMENT='$(python function.py)'" >> $GITHUB_ENV
       # Add the uses key to the action step
       - uses: thollander/actions-comment-pull-request@v1
         with:
