@@ -6,7 +6,10 @@ import openai
 
 def get_review():
   github_env = os.getenv("GITHUB_ENV")
-  pr_link = github_env
+  with open(github_env, "r") as f:
+    variables = dict([line.split("=") for line in f.readlines()])
+
+  pr_link = variables["LINK"]
   review = f"Horrible code, please stop, {pr_link}"
   return review
 
