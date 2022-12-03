@@ -20,8 +20,7 @@ jobs:
           pip install -r requirements.txt
       - name: Set the value
         run: |
-          echo "COMMENT='$(python function.py)'"
-          echo "COMMENT='$(python function.py)'" >> $GITHUB_ENV
+          echo "COMMENT=$(python function.py)" >> $GITHUB_ENV
 
       # Add the uses key to the action step
       - uses: thollander/actions-comment-pull-request@v1
