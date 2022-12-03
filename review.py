@@ -45,6 +45,8 @@ def get_review():
 
   response = requests.post(f'https://api.github.com/repos/{OWNER}/{REPO}/issues/{PR_NUMBER}/comments', headers=headers, data=data)
 
+  print(response.json())
+
 
 if __name__ == "__main__":
   get_review()
