@@ -7,7 +7,7 @@ import openai
 def get_review():
   github_env = os.getenv("GITHUB_ENV")
   with open(github_env, "r") as f:
-    variables = dict([line.split("=") for line in f.read.splitlines()])
+    variables = dict([line.split("=") for line in f.read().splitlines()])
   pr_link = variables["LINK"]
   openai.api_key = variables["OPENAI_API_KEY"]
 
