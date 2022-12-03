@@ -5,7 +5,7 @@ on:
     types: [created]
 
 env:
-  COMMENT: hi there
+  COMMENT: "hi there"
 
 jobs:
   build:
