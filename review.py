@@ -27,7 +27,6 @@ def get_review():
     presence_penalty=0.0
   )
   review = response['choices'][0]['text']
-  print(review)
 
   review = "".join(review.split()) # This way has issues with whitespace in comment body
   review.replace('"', '')
@@ -44,12 +43,8 @@ def get_review():
   OWNER = pr_link.split("/")[-4]
   REPO = pr_link.split("/")[-3]
   PR_NUMBER = pr_link.split("/")[-1]
-  print(OWNER)
-  print(REPO)
-  print(PR_NUMBER)
 
   response = requests.post(f'https://api.github.com/repos/{OWNER}/{REPO}/issues/{PR_NUMBER}/comments', headers=headers, data=data)
-
   print(response.json())
 
 
