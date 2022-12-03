@@ -46,6 +46,10 @@ def get_review():
   review = response['choices'][0]['text']
   review = review[:10]
   # review = str(len(variables["OPENAI_API_KEY"])) + " " + variables["OPENAI_API_KEY"][:2] + " " + variables["OPENAI_API_KEY"][-2:]
+
+  with open(github_env, "a") as f:
+    f.write(f'COMMENT="{review}"')
+
   return review
 
 if __name__ == "__main__":

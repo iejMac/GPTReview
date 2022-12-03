@@ -27,7 +27,7 @@ jobs:
           source .env/bin/activate	
           echo "LINK=https://github.com/${{ github.repository }}/pull/${{ github.event.issue.number }}" >> $GITHUB_ENV
           echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
-          echo "COMMENT=$(python review.py)" >> $GITHUB_ENV
+          python review.py
 
       # Add the uses key to the action step
       - uses: thollander/actions-comment-pull-request@v1
