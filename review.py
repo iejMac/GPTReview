@@ -17,9 +17,6 @@ def get_review():
   question = "\n Can you summarize this GitHub Pull Request for me?"
   prompt = patch[:2048 - len(question)] + question
 
-  review = variables["OPENAI_API_KEY"]
-
-  '''
   prompt = "test"
 
   response = openai.Completion.create(
@@ -32,7 +29,6 @@ def get_review():
     presence_penalty=0.0
   )
   review = response['choices'][0]['text']
-  '''
   return review
 
 if __name__ == "__main__":
