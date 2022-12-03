@@ -18,21 +18,6 @@ def get_review():
   prompt = patch[:2048 - len(question)] + question
 
   prompt = "test"
-  '''
-  headers = {
-    # Already added when you pass json=
-    'Content-Type': 'application/json',
-    'Authorization': f'Bearer {variables["OPENAI_API_KEY"]}',
-  }
-  json_data = {
-    'model': 'text-davinci-003',
-    'prompt': 'Say this is a test',
-    'temperature': 0,
-    'max_tokens': 7,
-  }
-
-  response = requests.post('https://api.openai.com/v1/completions', headers=headers, json=json_data)
-  '''
 
   response = openai.Completion.create(
     engine="text-ada-001",
@@ -46,9 +31,32 @@ def get_review():
   review = response['choices'][0]['text']
   review = review[:10]
   # review = str(len(variables["OPENAI_API_KEY"])) + " " + variables["OPENAI_API_KEY"][:2] + " " + variables["OPENAI_API_KEY"][-2:]
-
+  '''
   with open(github_env, "a") as f:
     f.write(f'COMMENT="{review}"')
+  '''
+
+  ACCESS_TOKEN = variables["GITHUB_TOKEN"]
+
+  headers = {
+    'Authorization': f'token {{ACCESS_TOKEN}}',
+    'Content-Type': 'application/x-www-form-urlencoded',
+  }
+
+  data = '{"body": "Your Message to Comment"}'
+
+  REPO_OWNER = "iejMac"
+  REPO_NAME = "GPTReview"
+  PR_NUMBER = 5
+
+  response = requests.post(
+    'https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/issues/${PR_NUMBER}/comments',
+    headers=headers,
+    data=data,
+  )
+
+
+
 
   return review
 
