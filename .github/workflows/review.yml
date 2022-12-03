@@ -24,14 +24,12 @@ jobs:
           pip install -r requirements.txt
       - name: Set link, api key, and get comment
         run: |
-          curl https://api.openai.com/v1/completions \
-          -H 'Content-Type: application/json' \
-          -H 'Authorization: Bearer ${{ secrets.OPENAI_API_KEY }}' \
-          -d '{
-          "model": "text-davinci-003",
-          "prompt": "Say this is a test",
-          "max_tokens": 7,
-          "temperature": 0
-          }'
+          source .env/bin/activate	
+          echo "LINK=https://github.com/${{ github.repository }}/pull/${{ github.event.issue.number }}" >> $GITHUB_ENV
+          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
+          echo "COMMENT=$(python review.py)" >> $GITHUB_ENV
 
-
+      # Add the uses key to the action step
+      - uses: thollander/actions-comment-pull-request@v1
+        with:
+          message: ${{ env.COMMENT }}
