@@ -8,7 +8,7 @@ jobs:
   pr_commented:
     name: Review PR
     if: ${{ github.event.issue.pull_request }}
-    if: startsWith(${{ github.event.comment.body }}, '@openai')
+    if: ${{ startsWith(github.event.comment.body, '@openai' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
