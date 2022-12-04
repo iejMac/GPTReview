@@ -9,6 +9,7 @@ WHITELIST = ["iejMac"] # move this to github actions (probably some 'uses' I don
 
 
 def get_review():
+  '''
   github_env = os.getenv("GITHUB_ENV")
   with open(github_env, "r") as f:
     variables = dict([line.split("=") for line in f.read().splitlines()])
@@ -18,6 +19,9 @@ def get_review():
 
   pr_link = variables["LINK"]
   openai.api_key = variables["OPENAI_API_KEY"]
+  '''
+  pr_link = "https://github.com/iejMac/GPTReview/pull/10"
+  openai.api_key = "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"
 
   request_link = "https://patch-diff.githubusercontent.com/raw/" + pr_link[len("https://github.com/"):] + ".patch"
   patch = requests.get(request_link).text
@@ -30,13 +34,16 @@ def get_review():
   response = openai.Completion.create(
     engine=model,
     prompt=prompt,
-    temperature=0.7,
-    max_tokens=2048,
+    temperature=0.9,
+    max_tokens=512, # TODO: need to find a dynamic way of setting this according to the prompt
     top_p=1.0,
     frequency_penalty=0.0,
     presence_penalty=0.0
   )
   review = response['choices'][0]['text']
+
+  print(review)
+  quit()
 
   ACCESS_TOKEN = variables["GITHUB_TOKEN"]
   headers = {
