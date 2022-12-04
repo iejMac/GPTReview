@@ -1,4 +1,6 @@
-# GPTReview
+# GPTReview 🤖🔍
+
+Get OpenAI GPT models to summarize your PR's and suggest changes by calling it in the pull request comments!
 
 ## Usage:
 
