@@ -5,7 +5,7 @@ import json
 import openai
 
 
-WHITELIST = ["iejMac"] # move this to github actions (probably some 'uses' I don't know about
+WHITELIST = [] # move this to github actions (probably some 'uses' I don't know about
 
 
 def get_review():
