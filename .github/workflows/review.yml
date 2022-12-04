@@ -29,4 +29,5 @@ jobs:
           echo "LINK=https://github.com/${{ github.repository }}/pull/${{ github.event.issue.number }}" >> $GITHUB_ENV
           echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
           echo "GITHUB_TOKEN=${{ github.token }}" >> $GITHUB_ENV
+          echo "GITHUB_ACTOR=${{ github.actor }}" >> $GITHUB_ENV
           python review.py
