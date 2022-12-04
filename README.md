@@ -44,8 +44,7 @@ jobs:
           python review.py
 ```
 
-2. Add the review.py script to the root of your repository
-Make sure to populate the WHITELIST variable with a list of usernames you want to be able to call the bot
+2. Add the review.py script to the root of your repository and make sure to populate the WHITELIST variable with a list of usernames you want to be able to call the bot
 ```python
 import os
 import requests
