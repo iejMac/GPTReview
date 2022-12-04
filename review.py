@@ -38,9 +38,6 @@ def get_review():
   )
   review = response['choices'][0]['text']
 
-  print(review)
-  quit()
-
   ACCESS_TOKEN = variables["GITHUB_TOKEN"]
   headers = {
     'Accept': 'application/vnd.github+json',
