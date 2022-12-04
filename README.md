@@ -6,7 +6,7 @@ If you want a PR summarized and you are a whitelisted user, go to the chat of th
 
 ## How to integrate into your repo:
 
-1.Add this workflow to your GitHub repository
+1. Add this workflow to your GitHub repository
 ```yaml
 name: Review PR with OpenAI GPT model
 
