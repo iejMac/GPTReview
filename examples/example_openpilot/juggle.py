@@ -14,7 +14,6 @@ from common.basedir import BASEDIR
 from selfdrive.test.process_replay.compare_logs import save_log
 from selfdrive.test.openpilotci import get_url
 from tools.lib.logreader import LogReader
-from tools.lib.framereader import ffmpeg_concatenate
 from tools.lib.route import Route, SegmentName
 from urllib.parse import urlparse, parse_qs
 
@@ -65,15 +64,12 @@ def load_segment(segment_name):
     return []
 
 
-def start_juggler(fn=None, dbc=None, layout=None, route_or_segment_name=None, video_path=None):
+def start_juggler(fn=None, dbc=None, layout=None, route_or_segment_name=None):
   env = os.environ.copy()
   env["BASEDIR"] = BASEDIR
   env["PATH"] = f"{INSTALL_DIR}:{os.getenv('PATH', '')}"
   if dbc:
     env["DBC_NAME"] = dbc
-  if video_path is not None:
-    env["VIDEO_PATH"] = video_path.name
-    env["VIDEO_REFERENCE_CURVE"] = "/roadCameraState/frameId"
 
   extra_args = ""
   if fn is not None:
@@ -87,7 +83,7 @@ def start_juggler(fn=None, dbc=None, layout=None, route_or_segment_name=None, vi
   subprocess.call(cmd, shell=True, env=env, cwd=juggle_dir)
 
 
-def juggle_route(route_or_segment_name, segment_count, qlog, can, layout, dbc=None, ci=False, video=False):
+def juggle_route(route_or_segment_name, segment_count, qlog, can, layout, dbc=None, ci=False):
   segment_start = 0
   if 'cabana' in route_or_segment_name:
     query = parse_qs(urlparse(route_or_segment_name).query)
@@ -95,13 +91,11 @@ def juggle_route(route_or_segment_name, segment_count, qlog, can, layout, dbc=No
 
   if route_or_segment_name.startswith(("http://", "https://", "cd:/")) or os.path.isfile(route_or_segment_name):
     logs = [route_or_segment_name]
-    videos = []
   elif ci:
     route_or_segment_name = SegmentName(route_or_segment_name, allow_route_name=True)
     route = route_or_segment_name.route_name.canonical_name
     segment_start = max(route_or_segment_name.segment_num, 0)
     logs = [get_url(route, i) for i in range(100)]  # Assume there not more than 100 segments
-    videos = []
   else:
     route_or_segment_name = SegmentName(route_or_segment_name, allow_route_name=True)
     segment_start = max(route_or_segment_name.segment_num, 0)
@@ -111,13 +105,9 @@ def juggle_route(route_or_segment_name, segment_count, qlog, can, layout, dbc=No
 
     r = Route(route_or_segment_name.route_name.canonical_name, route_or_segment_name.data_dir)
     logs = r.qlog_paths() if qlog else r.log_paths()
-    videos = r.qcamera_paths() if video else []
 
   segment_end = segment_start + segment_count if segment_count else None
   logs = logs[segment_start:segment_end]
-  # TODO: need to start from 0 instead of segment start for videos
-  #     so roadCameraState frameId matches video start
-  videos = videos[0:segment_end]
 
   if None in logs:
     resp = input(f"{logs.count(None)}/{len(logs)} of the rlogs in this segment are missing, would you like to fall back to the qlogs? (y/n) ")
@@ -128,17 +118,9 @@ def juggle_route(route_or_segment_name, segment_count, qlog, can, layout, dbc=No
       return
 
   all_data = []
-  temp_video_file = None
   with multiprocessing.Pool(24) as pool:
     for d in pool.map(load_segment, logs):
       all_data += d
-
-  if video:
-    temp_video_file = tempfile.NamedTemporaryFile(suffix='.mp4', dir=juggle_dir)
-    if not ffmpeg_concatenate(temp_video_file.name, videos):
-      video = False
-      temp_video_file.close()
-      temp_video_file = None
 
   if not can:
     all_data = [d for d in all_data if d.which() not in ['can', 'sendcan']]
@@ -156,7 +138,7 @@ def juggle_route(route_or_segment_name, segment_count, qlog, can, layout, dbc=No
   with tempfile.NamedTemporaryFile(suffix='.rlog', dir=juggle_dir) as tmp:
     save_log(tmp.name, all_data, compress=False)
     del all_data
-    start_juggler(tmp.name, dbc, layout, route_or_segment_name, temp_video_file)
+    start_juggler(tmp.name, dbc, layout, route_or_segment_name)
 
 
 if __name__ == "__main__":
@@ -167,8 +149,6 @@ if __name__ == "__main__":
   parser.add_argument("--qlog", action="store_true", help="Use qlogs")
   parser.add_argument("--ci", action="store_true", help="Download data from openpilot CI bucket")
   parser.add_argument("--can", action="store_true", help="Parse CAN data")
-  if platform.system() == "Linux":
-    parser.add_argument("--video", action="store_true", help="Load qcams into VideoViewer")
   parser.add_argument("--stream", action="store_true", help="Start PlotJuggler in streaming mode")
   parser.add_argument("--layout", nargs='?', help="Run PlotJuggler with a pre-defined layout")
   parser.add_argument("--install", action="store_true", help="Install or update PlotJuggler + plugins")
@@ -197,5 +177,4 @@ if __name__ == "__main__":
     start_juggler(layout=args.layout)
   else:
     route_or_segment_name = DEMO_ROUTE if args.demo else args.route_or_segment_name.strip()
-    load_video = args.video if platform.system() == 'Linux' else False
-    juggle_route(route_or_segment_name, args.segment_count, args.qlog, args.can, args.layout, args.dbc, args.ci, load_video)
+    juggle_route(route_or_segment_name, args.segment_count, args.qlog, args.can, args.layout, args.dbc, args.ci)
