@@ -22,16 +22,16 @@ def get_review():
   request_link = "https://patch-diff.githubusercontent.com/raw/" + pr_link[len("https://github.com/"):] + ".patch"
   patch = requests.get(request_link).text
 
-  question = "\n Can you summarize this GitHub Pull Request for me?"
-  prompt = patch[:4096 - len(question)] + question
+  question = "\n Can you summarize this GitHub Pull Request for me and suggest possible improvements?"
+  prompt = patch[:4096 - len(question.split(" "))] + question
 
   # model = "text-ada-001"
   model = "text-davinci-003"
   response = openai.Completion.create(
     engine=model,
     prompt=prompt,
-    temperature=0.5,
-    max_tokens=256,
+    temperature=0.7,
+    max_tokens=2048,
     top_p=1.0,
     frequency_penalty=0.0,
     presence_penalty=0.0
