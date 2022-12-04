@@ -22,7 +22,7 @@ def get_review():
   request_link = "https://patch-diff.githubusercontent.com/raw/" + pr_link[len("https://github.com/"):] + ".patch"
   patch = requests.get(request_link).text
 
-  question = "\n Can you summarize this GitHub Pull Request for me?"
+  question = "\nCan you summarize this GitHub Pull Request for me and give some feedback on how I can improve it?"
   prompt = patch[:4096 - len(question)] + question
 
   # model = "text-ada-001"
