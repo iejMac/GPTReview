@@ -13,19 +13,12 @@ def get_review():
   GIT_COMMIT_HASH = os.getenv("GIT_COMMIT_HASH")
   PR_TITLE = os.getenv("PR_TITLE")
   PR_BODY = os.getenv("PR_BODY")
+  PR_DIFF = os.getenv("DIFF")
 
   headers = {
     "Accept": "application/vnd.github.v3.patch",
     "authorization": f"Bearer {ACCESS_TOKEN}"
   }
-  
-  fetch_result = subprocess.check_output(["git", "fetch", "origin", "master"])
-  print("fetch result")
-  print(fetch_result)
-  diff_result = str(subprocess.check_output(["git", "diff", "origin/master"]))
-  print("diff result")
-  print(diff_result)
-  
 
 
   intro = f"\n Here is a pull request. Please assume you are a reviewer of this PR. First I will tell you the title and body of the PR. \n"
@@ -33,7 +26,7 @@ def get_review():
   pr_body = f"The body is {PR_BODY}.\n"
   question = "Can you tell me the problems with the following pull request and provide specific suggestions to improve it?"
   pr_diff = f"Here's the diff of what changed in this PR: {diff_result}"
-  prompt = intro + pr_title + pr_body + question + pr_diff
+  prompt = intro + pr_title + pr_body + question + PR_DIFF
 
   print(f"prompt: {prompt}")
 

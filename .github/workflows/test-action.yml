@@ -6,13 +6,18 @@ jobs:
     name: Test if the action works
     steps:
       - uses: actions/checkout@v3
-      - id: foo
+      - id: diff
+        run: |
+          diff=$(python3 diff.py)
+          echo "DIFF=$(echo $diff)" >> $GITHUB_ENV
+      - id: review
         uses: samjhill/GPTReview@main
         with:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GIT_COMMIT_HASH: ${{ secrets.GIT_COMMIT_HASH }}
-          PR_TITLE: ${{ secrets.PR_TITLE }}
-          PR_BODY: ${{ secrets.PR_BODY }}
-          REPOSITORY_NAME: ${{ secrets.REPOSITORY_NAME }}
-          PR_NUMBER: ${{ secrets.PR_NUMBER }}
+          GIT_COMMIT_HASH: ${{ github.event.pull_request.head.sha }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          REPOSITORY_NAME: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          DIFF: ${{ env.DIFF }}

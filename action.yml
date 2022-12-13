@@ -8,7 +8,7 @@ inputs:
     description: 'pass secrets.GITHUB_TOKEN'
     required: true
   GIT_COMMIT_HASH:
-    description: 'pass secrets.GIT_COMMIT_HASH'
+    description: 'pass github.event.pull_request.head.sha'
     required: true
   PR_TITLE:
     description: 'pass github.event.pull_request.title'
