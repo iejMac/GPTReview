@@ -1,17 +1,40 @@
 name: 'GPTReview'
 description: 'Let AI review your code'
+inputs:
+  OPENAI_API_KEY:
+    description: 'OpenAI API Key'
+    required: true
+  GITHUB_TOKEN:
+    description: 'pass secrets.GITHUB_TOKEN'
+    required: true
+  GIT_COMMIT_HASH:
+    description: 'pass secrets.GIT_COMMIT_HASH'
+    required: true
+  PR_TITLE:
+    description: 'pass github.event.pull_request.title'
+    required: true
+  PR_BODY:
+    description: 'pass github.event.pull_request.body'
+    required: true
+  REPOSITORY_NAME:
+    description: 'pass github.repository'
+    required: true
+  PR_NUMBER:
+    description: 'pass github.event.pull_request.number'
+    required: true
 runs:
   using: "composite"
   steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ inputs.PR_NUMBER }}
           fetch-depth: 2
       - name: Set up Python 3.8
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
       - name: Install
+        shell: bash
         run: |
           sudo apt-get update
           python3 -m venv .env
@@ -19,13 +42,14 @@ runs:
           python -m pip install -U pip
           pip install -r requirements.txt
       - name: Review PR and make comment
+        shell: bash
         run: |
           source .env/bin/activate
           python review.py
         env:
-          LINK: "https://github.com/${{ github.repository }}/pull/${{ github.event.pull_request.number }}"
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} 
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-          GIT_COMMIT_HASH: ${{ github.sha }}
-          PR_TITLE: ${{ github.event.pull_request.title }}
-          PR_BODY: ${{ github.event.pull_request.body }}
+          LINK: "https://github.com/${{ inputs.REPOSITORY_NAME }}/pull/${{ inputs.PR_NUMBER }}"
+          OPENAI_API_KEY: ${{ inputs.OPENAI_API_KEY }} 
+          GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }} 
+          GIT_COMMIT_HASH: ${{ inputs.GIT_COMMIT_HASH }}
+          PR_TITLE: ${{ inputs.PR_TITLE }}
+          PR_BODY: ${{ inputs.PR_BODY }}
