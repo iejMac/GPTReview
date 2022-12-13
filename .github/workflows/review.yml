@@ -1,18 +1,16 @@
-name: Review PR with OpenAI GPT model
+on: [pull_request]
 
-on:
-  issue_comment:
-    types: [created]
+name: AI Code Review
 
 jobs:
-  pr_commented:
-    if: |
-      github.event.issue.pull_request &&
-      startsWith(github.event.comment.body, 'openai')
+  review:
     name: Review PR
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 2
       - name: Set up Python 3.8
         uses: actions/setup-python@v2
         with:
@@ -26,9 +24,12 @@ jobs:
           pip install -r requirements.txt
       - name: Review PR and make comment
         run: |
-          source .env/bin/activate	
-          echo "LINK=https://github.com/${{ github.repository }}/pull/${{ github.event.issue.number }}" >> $GITHUB_ENV
-          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
-          echo "GITHUB_TOKEN=${{ github.token }}" >> $GITHUB_ENV
-          echo "GITHUB_ACTOR=${{ github.actor }}" >> $GITHUB_ENV
+          source .env/bin/activate
           python review.py
+        env:
+          LINK: "https://github.com/${{ github.repository }}/pull/${{ github.event.pull_request.number }}"
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          GIT_COMMIT_HASH: ${{ github.sha }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
