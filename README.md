@@ -2,7 +2,7 @@
 
 Get OpenAI GPT models to suggest changes on your pull request in the comments!
 
-## Usage:
+![example review](./images/example.png)
 
 ## How to integrate into your repo:
 
