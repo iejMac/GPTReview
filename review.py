@@ -30,7 +30,6 @@ def get_review():
 
   print(f"prompt: {prompt}")
 
-  # model = "text-ada-001"
   model = "text-davinci-003"
   response = openai.Completion.create(
     engine=model,
