@@ -22,6 +22,9 @@ inputs:
   PR_NUMBER:
     description: 'pass github.event.pull_request.number'
     required: true
+  DIFF:
+    description: 'what has changed between PRs'
+    required: true
 runs:
   using: "composite"
   steps:

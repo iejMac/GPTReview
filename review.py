@@ -43,8 +43,6 @@ def get_review():
   )
   review = response['choices'][0]['text']
 
-  
-
   data = {"body": review, "commit_id": GIT_COMMIT_HASH, "event": "COMMENT"}
   data = json.dumps(data)
   print(f"openAI response {data}")
