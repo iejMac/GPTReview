@@ -8,7 +8,7 @@ jobs:
   pr_commented:
     if: |
       github.event.issue.pull_request &&
-      startsWith(github.event.comment.body, 'openai')
+      startsWith(github.event.comment.body, 'starchat')
     name: Review PR
     runs-on: ubuntu-latest
     steps:
@@ -28,7 +28,6 @@ jobs:
         run: |
           source .env/bin/activate	
           echo "LINK=https://github.com/${{ github.repository }}/pull/${{ github.event.issue.number }}" >> $GITHUB_ENV
-          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> $GITHUB_ENV
           echo "GITHUB_TOKEN=${{ github.token }}" >> $GITHUB_ENV
           echo "GITHUB_ACTOR=${{ github.actor }}" >> $GITHUB_ENV
           python review.py

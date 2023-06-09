@@ -1,14 +1,16 @@
 import os
 import requests
 import json
-
-import openai
-
-
-WHITELIST = ["iejMac"] # move this to github actions (probably some 'uses' I don't know about
+from text_generation import Client
 
 
-def get_review():
+WHITELIST = ["younesbelkada", "lvwerra"] # move this to github actions (probably some 'uses' I don't know about
+API_URL = "https://api-inference.huggingface.co/models/HuggingFaceH4/starchat-beta"
+MAX_NUM_TOKENS = 8192
+SYS_MESSAGE="Below is a conversation between a human user and a helpful AI coding assistant.\n\n"
+QUESTION = "Can you summarize this GitHub Pull Request for me and suggest possible improvements?"
+
+def get_review(hf_api_key=None):
   github_env = os.getenv("GITHUB_ENV")
   with open(github_env, "r") as f:
     variables = dict([line.split("=") for line in f.read().splitlines()])
@@ -17,26 +19,24 @@ def get_review():
       return
 
   pr_link = variables["LINK"]
-  openai.api_key = variables["OPENAI_API_KEY"]
+  if hf_api_key is None:
+    hf_api_key = os.getenv("HF_HUB_KEY")
 
   request_link = "https://patch-diff.githubusercontent.com/raw/" + pr_link[len("https://github.com/"):] + ".patch"
   patch = requests.get(request_link).text
 
-  question = "\n Can you summarize this GitHub Pull Request for me and suggest possible improvements?"
-  prompt = patch[:4096 - len(question.split(" "))] + question
+  truncated_patch = patch[:MAX_NUM_TOKENS - len(QUESTION.split(" "))] 
+  prompt = SYS_MESSAGE + f"Human: \n```{truncated_patch}```\n{QUESTION}\n\nAssistant: "
 
-  # model = "text-ada-001"
-  model = "text-davinci-003"
-  response = openai.Completion.create(
-    engine=model,
-    prompt=prompt,
-    temperature=0.9,
-    max_tokens=512, # TODO: need to find a dynamic way of setting this according to the prompt
-    top_p=1.0,
-    frequency_penalty=0.0,
-    presence_penalty=0.0
+
+  client = Client(
+    API_URL,
+    headers={"Authorization": f"Bearer {hf_api_key}"} if hf_api_key is not None else None,
   )
-  review = response['choices'][0]['text']
+
+  # TODO: add generation kwargs
+  response = client.generate(prompt)
+  review = response.generated_text
 
   ACCESS_TOKEN = variables["GITHUB_TOKEN"]
   headers = {
